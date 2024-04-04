@@ -11,12 +11,13 @@ def generate(
     mots,
     dimensionsx=20,
     dimensionsy=20,
-    allow_diagonal=True,
-    allow_reverse=True,
+    sensPossible={"b","d","h","g","bg","bd","hd","hg"}
+    # allow_diagonal=True,
+    # allow_reverse=True,
     ):
-    sensPossible = {"b","d"} | (
-        {"bg","bd","hd","hg"} if allow_diagonal else set() &\
-        {"h","g","hd","bg"} if allow_reverse else set())
+    # sensPossible = {"b","d"} | (
+    #     {"bg","bd","hd","hg"} if allow_diagonal else set() &\
+    #     {"h","g","hd","bg"} if allow_reverse else set())
     letters = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     for mot in mots:
@@ -102,6 +103,7 @@ def generate(
     #filemotsmeles("motsmeles.txt")
     #print(VraiReponses)
     #rrzu=input("enter")
+    # FIXME a bug of blank letters
     for y in range(dimensionsy):
         for x in range(dimensionsx):
             for _ in range(1):
