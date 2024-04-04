@@ -1,57 +1,29 @@
-#bug dans les coordonnées
+
 import numpy
 import pandas as pd
-# def datamotsmeles():
-#     global data
-#     data=""
-#     for y in range(dimensionsy):
-#         #print((dimensionsy-y)-1)
-#         for x in range(dimensionsx):
-#             #data=data+
-#             index=indexSurListe(x,(dimensionsy-y)-1)
-#             data=data+letters[index]
-#             #f.write(letters[index]+" ")
-#         data=data+";\n"
-#     #f.close()
-#     data=data+";\n"
-#     for mot in mots:
-#         data=data+mot+";\n"
 import random
 
+from psutil import sensors_battery
 
 alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-#premier=True
-# for repeat in range(fois):
-#     for sens in sensPossible:
-#         sensdemots.append(sens)
-#         """if premier==True:
-#             sensdemots.append(sens)#("hd")
-#             premier=False
-#         else:
-#             sensdemots.append(sens)"""
-        
-# for sens in sensPossible:
-#     sensfin.append(sens)
-    
-# for repeat in range(len(mots)-fois*len(sensPossible)):
-#     Random=random.randint(0,len(sensfin)-1)
-#     sensdemots.append(sensfin[Random])
-#     del sensfin[Random]
-sensdemots = random.sample(sensPossible, len(mots))
 
-# for repeat in range(dimensionsy):
-#     for repeat in range(dimensionsx):
-#         letters.append("")
-#     letters.append(" ")
-
-#print(letters)
-def generate(sensPossible=["h","hd","d","bd","b","bg","g","hg"],dimensionsx=20,dimensionsy=20,mots=["BEDWARS","BUILDBATTLE","BLOCKPARTY","HIDEANDSEEK","SKYWARS","PARTYGAMES","PVP","DEATHRUN"]):
-    
+def generate(
+    mots,
+    dimensionsx=20,
+    dimensionsy=20,
+    allow_diagonal=True,
+    allow_reverse=True,
+    ):
+    sensPossible = {"b","d"} | (
+        {"bg","bd","hd","hg"} if allow_diagonal else set() &\
+        {"h","g","hd","bg"} if allow_reverse else set())
     letters = numpy.empty((dimensionsy, dimensionsx), dtype=str)
-    answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y'])
+    answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     for mot in mots:
         #print("count: "+str(count)
-        sens=random.choice(sensPossible)
+        mot = mot.upper()
+        assert mot.isalpha(), f"Mot invalid: {mot}"
+        sens = random.choice(sensPossible)
         if "h" in sens:
             """if count==2: #2
                 print("math: "+str((dimensionsy-len(mots))+1))"""
@@ -93,25 +65,25 @@ def generate(sensPossible=["h","hd","d","bd","b","bg","g","hg"],dimensionsx=20,d
                     #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
                     if letters[yh,xh]!="":
                         if letters[yh,xh]!=letter:
-                            Break=True
                             break
                     xh+=addx
                     yh+=addy
-                if Break==False:                
-                    choixcoordonnees.append((x,y))
+                else:               
+                    choixcoordonnees.append((y,x))
         assert choixcoordonnees, "Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme."
-        x,y=random.choice(choixcoordonnees)
+        y,x=random.choice(choixcoordonnees)
         #xh,yh=coordonnees(index)
-        VraiReponses=VraiReponses+"Mot : "+mot+", Sens : "+sens+", Coordonnees : "+str(x)+", "+str(y)
-        fx=x
+        xh,yh=x,y
         for letter in mot:
-            letters[y,x]=letter
+            letters[yh,xh]=letter # a big debug: replace with yh, xh
             #xh,yh=coordonnees(index)
-            print(type(x),type(addx))
-            x+=addx
-            y+=addy
+            #print(type(x),type(addx))
+            xh+=addx
+            yh+=addy
+        answers.loc[len(answers)] = {'mot': mot, 'sens': sens, 'x': x, 'y': y,'xh': xh, 'yh': yh}
+        #answers = answers.append({'mot': mot, 'sens': sens, 'x': x, 'y': y,'xh': xh, 'yh': yh}, ignore_index=True)
+
             #index=indexSurListe(xh+addx,yh+addy)
-        VraiReponses=VraiReponses+", Jusque : "+str(x)+", "+str(y)+"\n"
     def verifsens(addx,addy):
 
         letters[y,x]=letter 
@@ -132,15 +104,18 @@ def generate(sensPossible=["h","hd","d","bd","b","bg","g","hg"],dimensionsx=20,d
     #rrzu=input("enter")
     for y in range(dimensionsy):
         for x in range(dimensionsx):
-            
-            #pindex=indexSurListe(x,y)
-            #print(index)
-            #try:
-            #    anciennelettre=letters[y,x]
-            #except IndexError:
-            #    print("len(letters) :"+str(len(letters))+"index:"+str(pindex))
-            lettrespossible=[]
-            if letters[y,x]=="":
+            for _ in range(1):
+                xs,ys=x,y
+                #pindex=indexSurListe(x,y)
+                #print(index)
+                #try:
+                #    anciennelettre=letters[y,x]
+                #except IndexError:
+                #    print("len(letters) :"+str(len(letters))+"index:"+str(pindex))
+                lettrespossible=[]
+                if letters[y,x]:
+                    #print(repr(letters[y,x]))
+                    break
                 for letter in alphabet:
                     for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
                         if not verifsens(addx,addy):
@@ -149,9 +124,17 @@ def generate(sensPossible=["h","hd","d","bd","b","bg","g","hg"],dimensionsx=20,d
                     else:
                         lettrespossible.append(letter)
 
-                if not lettrespossible:
-                    raise Exception("Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme.")
+                assert lettrespossible, "Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme."
                 letters[y,x]=random.choice(lettrespossible)
+            if letters[ys,xs] not in alphabet:
+                pass
+    
+    # for y in range(dimensionsy):
+    #     for x in range(dimensionsx):
+    #         if letters[y,x]=="":
+    #             pass
+                #letters[y,x]=random.choice(alphabet)
+    return letters,answers
 #datamotsmeles()
 # reponses=["c","r","s"]
 # reponse=""
