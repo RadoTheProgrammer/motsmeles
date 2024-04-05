@@ -2,15 +2,17 @@
 import numpy
 import pandas as pd
 import random
+import sys
+import builtins
 
 from psutil import sensors_battery
 
 alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
+# TODO remplacer sensPossible par allow_inverse, allow_diagonal
 def generate(
     mots,
-    dimensionsx=20,
-    dimensionsy=20,
+    dimensionsx=10,
+    dimensionsy=10,
     sensPossible={"b","d","h","g","bg","bd","hd","hg"}
     # allow_diagonal=True,
     # allow_reverse=True,
@@ -18,13 +20,15 @@ def generate(
     # sensPossible = {"b","d"} | (
     #     {"bg","bd","hd","hg"} if allow_diagonal else set() &\
     #     {"h","g","hd","bg"} if allow_reverse else set())
-    letters = numpy.empty((dimensionsy, dimensionsx), dtype=str)
+    jeu = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     for mot in mots:
         #print("count: "+str(count)
         mot = mot.upper()
-        assert mot.isalpha(), f"Mot invalid: {mot}"
-        sens = random.choice(sensPossible)
+        for letter in mot:
+            assert letter in alphabet,f"Mot invalid: {mot}"
+        
+        sens = random.choice(tuple(sensPossible))
         if "h" in sens:
             """if count==2: #2
                 print("math: "+str((dimensionsy-len(mots))+1))"""
@@ -64,8 +68,8 @@ def generate(
                     except IndexError:
                         print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
                     #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
-                    if letters[yh,xh]!="":
-                        if letters[yh,xh]!=letter:
+                    if jeu[yh,xh]!="":
+                        if jeu[yh,xh]!=letter:
                             break
                     xh+=addx
                     yh+=addy
@@ -76,7 +80,7 @@ def generate(
         #xh,yh=coordonnees(index)
         xh,yh=x,y
         for letter in mot:
-            letters[yh,xh]=letter # a big debug: replace with yh, xh
+            jeu[yh,xh]=letter # a big debug: replace with yh, xh
             #xh,yh=coordonnees(index)
             #print(type(x),type(addx))
             xh+=addx
@@ -87,16 +91,16 @@ def generate(
             #index=indexSurListe(xh+addx,yh+addy)
     def verifsens(addx,addy):
 
-        letters[y,x]=letter 
+        jeu[y,x]=letter 
         mot=letter
         xh,yh=x,y
         while 0<=xh<dimensionsx and 0<=yh<dimensionsy:
-            if letters[yh,xh]=="":
+            if jeu[yh,xh]=="":
                 return True
             if mot in mots:
                 return False
             #lettrespossible.append(letter)
-            mot+=letters[yh,xh]
+            mot+=jeu[yh,xh]
             xh+=addx
             yh+=addy 
         return True
@@ -115,7 +119,7 @@ def generate(
                 #except IndexError:
                 #    print("len(letters) :"+str(len(letters))+"index:"+str(pindex))
                 lettrespossible=[]
-                if letters[y,x]:
+                if jeu[y,x]:
                     #print(repr(letters[y,x]))
                     break
                 for letter in alphabet:
@@ -127,8 +131,14 @@ def generate(
                         lettrespossible.append(letter)
 
                 assert lettrespossible, "Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme."
-                letters[y,x]=random.choice(lettrespossible)
-            if letters[ys,xs] not in alphabet:
+                jeu[y,x]=random.choice(lettrespossible)
+            if jeu[ys,xs] not in alphabet:
+                pass
+            
+            
+    for y in range(dimensionsy):
+        for x in range(dimensionsx):
+            if jeu[y,x] not in alphabet:
                 pass
     
     # for y in range(dimensionsy):
@@ -136,7 +146,17 @@ def generate(
     #         if letters[y,x]=="":
     #             pass
                 #letters[y,x]=random.choice(alphabet)
-    return letters,answers
+    return jeu,answers
+
+def print(letters,file=sys.stdout):
+    for y in range(len(letters)):
+        for x in range(len(letters[0])):
+            builtins.print(letters[y,x],end="",file=file)
+        builtins.print(file=file)
+
+def save(letters,file="motsmeles.txt"):
+    with open(file,"w") as f:
+        print(letters,file=f)
 #datamotsmeles()
 # reponses=["c","r","s"]
 # reponse=""
