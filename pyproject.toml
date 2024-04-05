@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "motsmeles"
-version = "0.1.0"
+version = "1.0.0"
 description = "générateur de mots mêlés"
 authors = ["RadoTheProgrammer <rado@arazakar.com>"]
 license = "MIT"
