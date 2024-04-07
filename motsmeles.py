@@ -79,6 +79,7 @@ def generate(
                         yh+=addy
                     else:               
                         choixcoordonnees.append((y,x))
+            break
         else:
             raise ValueError(f"Impossible de placer le mot {mot}")
         y,x=random.choice(choixcoordonnees)
@@ -134,8 +135,8 @@ def generate(
                             break
                     else:
                         lettrespossible.append(letter)
-
-                assert lettrespossible, "Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme."
+                if not lettrespossible:
+                    raise ValueError(f"Impossible de placer une lettre à {x},{y}")
                 grille[y,x]=random.choice(lettrespossible)
             if grille[ys,xs] not in alphabet:
                 pass
