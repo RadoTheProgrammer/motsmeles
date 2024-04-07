@@ -23,11 +23,14 @@ def generate(
     jeu = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     for mot in mots:
-        #print("count: "+str(count)
+        #Vérification du mot
         mot = mot.upper()
         for letter in mot:
             assert letter in alphabet,f"Mot invalid: {mot}"
+        dim = min(dimensionsx, dimensionsy)
+        assert len(mot) <= dim, f"Mot trop long: {mot}"
         
+        #choix de rangey, rangex, addy, addx
         sens = random.choice(tuple(sensPossible))
         if "h" in sens:
             """if count==2: #2
