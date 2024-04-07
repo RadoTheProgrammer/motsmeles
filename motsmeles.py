@@ -55,30 +55,32 @@ def generate(
             addx=0
         """if count==2: #2
             print("rangey: "+str(rangey)+", rangex: "+str(rangex))"""
-        choixcoordonnees=[]
-        for y in rangey:
+        for _ in range(10):
+            choixcoordonnees=[]
+            for y in rangey:
 
-            for x in rangex:
+                for x in rangex:
 
-                #pindex=indexSurListe(x,y)
-                #index=pindex
-                #print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))
-                xh,yh=x,y #create copy of x,y
-                Break=False
-                for letter in mot:
-                    """try: #2
-                        letters[index]
-                    except IndexError:
-                        print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
-                    #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
-                    if jeu[yh,xh]!="":
-                        if jeu[yh,xh]!=letter:
-                            break
-                    xh+=addx
-                    yh+=addy
-                else:               
-                    choixcoordonnees.append((y,x))
-        assert choixcoordonnees, "Désolé, le générateur s'est planté, il suffit juste de rexcécuter le programme."
+                    #pindex=indexSurListe(x,y)
+                    #index=pindex
+                    #print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))
+                    xh,yh=x,y #create copy of x,y
+                    Break=False
+                    for letter in mot:
+                        """try: #2
+                            letters[index]
+                        except IndexError:
+                            print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
+                        #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
+                        if jeu[yh,xh]!="":
+                            if jeu[yh,xh]!=letter:
+                                break
+                        xh+=addx
+                        yh+=addy
+                    else:               
+                        choixcoordonnees.append((y,x))
+        else:
+            raise ValueError(f"Impossible de placer le mot {mot}")
         y,x=random.choice(choixcoordonnees)
         #xh,yh=coordonnees(index)
         xh,yh=x,y
