@@ -13,13 +13,16 @@ def generate(
     mots,
     dimensionsx=10,
     dimensionsy=10,
-    sensPossible={"b","d","h","g","bg","bd","hd","hg"}
-    # allow_diagonal=True,
-    # allow_reverse=True,
+    #sensPossible={"b","d","h","g","bg","bd","hd","hg"}
+    no_diagonal=False,
+    no_reverse=False,
     ):
-    # sensPossible = {"b","d"} | (
-    #     {"bg","bd","hd","hg"} if allow_diagonal else set() &\
-    #     {"h","g","hd","bg"} if allow_reverse else set())
+
+    sensPossible={"b","d","h","g","bg","bd","hd","hg"}
+    if no_diagonal:
+        sensPossible -= {"bg","bd","hd","hg"}
+    if no_reverse:
+        sensPossible -= {"h","g","hd","bg"}
     grille = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     for mot in mots:
@@ -174,37 +177,21 @@ def main():
     parser.add_argument("-x", "--dimensionsx", type=int, default=10, help="la largeur de la grille")
     parser.add_argument("-y", "--dimensionsy", type=int, default=10, help="la hauteur de la grille")
     #parser.add_argument("-o", "--output-file", help="fichier de sortie")
-    
+    parser.add_argument("-d","--no-diagonal", action="store_true", help="ne pas autoriser les mots en diagonale")
+    parser.add_argument("-r","--no-reverse", action="store_true", help="ne pas autoriser les mots en sens inverse")
     args=parser.parse_args()
-    grille,answers=generate(args.mots,args.dimensionsx,args.dimensionsy)
+    grille,answers=generate(
+        args.mots,
+        args.dimensionsx,
+        args.dimensionsy,
+        no_diagonal=args.no_diagonal,
+        no_reverse=args.no_reverse,
+        )
     print(grille)
     builtins.print(answers)
 if __name__=="__main__":
     main()
-#datamotsmeles()
-# reponses=["c","r","s"]
-# reponse=""
-# while reponse=="":
-#     reponse=input("\nnom du fichier ?")
-# f=open(reponse,"w")
-# f.write(data)
-# f.close()
-# print("données enregistrés avec succès")
-"""while True:
-    reponse=None
-    while reponse not in reponses:
-        reponse=input("\n\nc pour voir le code\nr pour voir les réponses\ns pour enregistrer dans un fichier")
-    if reponse=="c":
-        print("\n\ncode :\n\n"+data.replace("\n",""))
-    elif reponse=="r":
-        print("\n\nRéponses :\n"+VraiReponses)
-    else:
-        reponse=input("\n\nnom du fichier?")
-        if reponse!="":
-            f=open(reponse,"w")
-            f.write(data)
-            f.close()
-            print("données enregistrés avec succès")"""
+
 
                     
                 
