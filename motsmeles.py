@@ -154,15 +154,33 @@ def generate(
                 #letters[y,x]=random.choice(alphabet)
     return grille,answers
 
-def print(letters,file=sys.stdout):
-    for y in range(len(letters)):
-        for x in range(len(letters[0])):
-            builtins.print(letters[y,x],end="",file=file)
+def print(grille,file=sys.stdout):
+    for y in range(len(grille)):
+        for x in range(len(grille[0])):
+            builtins.print(grille[y,x],end="",file=file)
         builtins.print(file=file)
 
-def save(letters,file="motsmeles.txt"):
+def save(grille,file="motsmeles.txt"):
     with open(file,"w") as f:
-        print(letters,file=f)
+        print(grille,file=f)
+def save_answers(answers,file="motsmeles-answers.csv"):
+    answers.to_csv(file,index=False)
+        
+def main():
+    import argparse
+    
+    parser = argparse.ArgumentParser(description="générateur de mots mêlés")
+    parser.add_argument("mots", nargs="+", help="les mots à placer")
+    parser.add_argument("-x", "--dimensionsx", type=int, default=10, help="la largeur de la grille")
+    parser.add_argument("-y", "--dimensionsy", type=int, default=10, help="la hauteur de la grille")
+    #parser.add_argument("-o", "--output-file", help="fichier de sortie")
+    
+    args=parser.parse_args()
+    grille,answers=generate(args.mots,args.dimensionsx,args.dimensionsy)
+    print(grille)
+    builtins.print(answers)
+if __name__=="__main__":
+    main()
 #datamotsmeles()
 # reponses=["c","r","s"]
 # reponse=""

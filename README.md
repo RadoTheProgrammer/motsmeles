@@ -30,11 +30,20 @@ jeu,answers=motsmeles.generate(
     dimensionsy = 10)
 ```
 
-
 La variable `jeu` contient le mots-mêlés, c'est un tableau Numpy, pour l'afficher utilisez `motsmeles.print()` et pour l'enregistrer dans un fichier `motsmeles.save()`
 
 ```python
 
 motsmeles.print(jeu)
 motsmeles.save(jeu,file="motsmeles.txt")
+```
+
+
+# Usage en CLI
+
+Vous pouvez aussi éxécuter directement dans le CLI
+
+```
+
+motsmeles PYTHON JAVA CPP JAVASCRIPT HTML CSS -x 10 -y 10
 ```
