@@ -9,6 +9,8 @@ from psutil import sensors_battery
 
 alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 # TODO remplacer sensPossible par allow_inverse, allow_diagonal
+class GenerateError(Exception):
+    pass
 def generate(
     mots,
     dimensionsx=10,
@@ -58,33 +60,32 @@ def generate(
             addx=0
         """if count==2: #2
             print("rangey: "+str(rangey)+", rangex: "+str(rangex))"""
-        for _ in range(10):
-            choixcoordonnees=[]
-            for y in rangey:
+        choixcoordonnees=[]
+        for y in rangey:
 
-                for x in rangex:
+            for x in rangex:
 
-                    #pindex=indexSurListe(x,y)
-                    #index=pindex
-                    #print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))
-                    xh,yh=x,y #create copy of x,y
-                    Break=False
-                    for letter in mot:
-                        """try: #2
-                            letters[index]
-                        except IndexError:
-                            print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
-                        #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
-                        if grille[yh,xh]!="":
-                            if grille[yh,xh]!=letter:
-                                break
-                        xh+=addx
-                        yh+=addy
-                    else:               
-                        choixcoordonnees.append((y,x))
-            break
-        else:
-            raise ValueError(f"Impossible de placer le mot {mot}")
+                #pindex=indexSurListe(x,y)
+                #index=pindex
+                #print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))
+                xh,yh=x,y #create copy of x,y
+                Break=False
+                for letter in mot:
+                    """try: #2
+                        letters[index]
+                    except IndexError:
+                        print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
+                    #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
+                    if grille[yh,xh]!="":
+                        if grille[yh,xh]!=letter:
+                            break
+                    xh+=addx
+                    yh+=addy
+                else:               
+                    choixcoordonnees.append((y,x))
+        if not choixcoordonnees: 
+            
+            raise GenerateError(f"Impossible de placer le mot {mot}")
         y,x=random.choice(choixcoordonnees)
         #xh,yh=coordonnees(index)
         xh,yh=x,y
@@ -139,7 +140,7 @@ def generate(
                     else:
                         lettrespossible.append(letter)
                 if not lettrespossible:
-                    raise ValueError(f"Impossible de placer une lettre à {x},{y}")
+                    raise GenerateError(f"Impossible de placer une lettre à {x},{y}")
                 grille[y,x]=random.choice(lettrespossible)
             if grille[ys,xs] not in alphabet:
                 pass
