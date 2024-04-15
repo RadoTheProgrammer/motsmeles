@@ -24,8 +24,10 @@ def generate(
         sensPossible -= {"bg","bd","hd","hg"}
     if no_reverse:
         sensPossible -= {"h","g","hd","bg"}
+        
     grille = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
+    
     def _generate():
         # 1. Placer les mots
         for mot in mots:
@@ -39,13 +41,11 @@ def generate(
             #choix de rangey, rangex, addy, addx
             sens = random.choice(tuple(sensPossible))
             if "h" in sens:
-                """if count==2: #2
-                    print("math: "+str((dimensionsy-len(mots))+1))"""
+
                 rangey=range((dimensionsy-len(mot))+1)
                 addy=1
             elif "b" in sens:
                 rangey=range(len(mot)-1,dimensionsy)
-                #print("b rangey :"+str(rangey))
                 addy=-1
             else:
                 rangey=range(dimensionsy)
@@ -59,23 +59,16 @@ def generate(
             else:
                 rangex=range(dimensionsx)
                 addx=0
-            """if count==2: #2
-                print("rangey: "+str(rangey)+", rangex: "+str(rangex))"""
+
             choixcoordonnees=[]
             for y in rangey:
 
                 for x in rangex:
 
-                    #pindex=indexSurListe(x,y)
-                    #index=pindex
-                    #print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))
                     xh,yh=x,y #create copy of x,y
                     Break=False
                     for letter in mot:
-                        """try: #2
-                            letters[index]
-                        except IndexError:
-                            print(", longueur de lettres: "+str(len(letters))+", index: "+str(index))"""
+
                         #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
                         if grille[yh,xh]!="":
                             if grille[yh,xh]!=letter:
@@ -92,14 +85,11 @@ def generate(
             xh,yh=x,y
             for letter in mot:
                 grille[yh,xh]=letter # a big debug: replace with yh, xh
-                #xh,yh=coordonnees(index)
-                #print(type(x),type(addx))
+
                 xh+=addx
                 yh+=addy
             answers.loc[len(answers)] = {'mot': mot, 'sens': sens, 'x': x, 'y': y,'xh': xh, 'yh': yh}
-            #answers = answers.append({'mot': mot, 'sens': sens, 'x': x, 'y': y,'xh': xh, 'yh': yh}, ignore_index=True)
 
-                #index=indexSurListe(xh+addx,yh+addy)
         def verifsens(addx,addy):
 
             grille[y,x]=letter 
@@ -115,21 +105,11 @@ def generate(
                 xh+=addx
                 yh+=addy 
             return True
-        #filemotsmeles("motsmeles.txt")
-        #print(VraiReponses)
-        #rrzu=input("enter")
-        # FIXME a bug of blank letters
-        # 2. Remplir les cases vides
+
         for y in range(dimensionsy):
             for x in range(dimensionsx):
                 for _ in range(1):
                     xs,ys=x,y
-                    #pindex=indexSurListe(x,y)
-                    #print(index)
-                    #try:
-                    #    anciennelettre=letters[y,x]
-                    #except IndexError:
-                    #    print("len(letters) :"+str(len(letters))+"index:"+str(pindex))
                     lettrespossible=[]
                     if grille[y,x]:
                         #print(repr(letters[y,x]))
