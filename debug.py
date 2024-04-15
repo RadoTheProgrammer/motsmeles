@@ -1,19 +1,22 @@
 # %%
-from motsmeles import generateur
+import motsmeles
 
 # %%
-letters,answers=generateur.generate([
-    "PYTHON",
-    "JAVA",
-    "CPP",
-    "JAVASCRIPT",
-    "HTML",
-    "CSS",
-    "PHP",
-    "RUBY",
-    "SWIFT",
-    "PERL",
-    "RUST",
-])
+jeu,answers=motsmeles.generate(
+    [
+        "PYTHON",
+        "JAVA",
+        "CPP",
+        "JAVASCRIPT",
+        "HTML",
+        "CSS",
+        "PHP",
+        "RUBY",
+        "SWIFT",
+        "PERL",
+        "RUST",
+    ],
+    dimensionsx = 10, 
+    dimensionsy = 10)
 
 
