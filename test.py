@@ -2,7 +2,7 @@
 import motsmeles
 
 # %%
-jeu,answers=motsmeles.generate(
+grid,answers=motsmeles.generate(
     [
         "PYTHON",
         "JAVA",
@@ -16,7 +16,7 @@ jeu,answers=motsmeles.generate(
         "PERL",
         "RUST",
     ],
-    dimensionsx = 10, 
-    dimensionsy = 10)
+    width = 10, 
+    height = 10)
 
 
