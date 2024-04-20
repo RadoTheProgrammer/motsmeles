@@ -22,11 +22,11 @@ def generate(
     no_reverse=False,
     ):
 
-    sensPossible={"b","d","h","g","bg","bd","hd","hg"}
+    possibleDirections={"b","d","h","g","bg","bd","hd","hg"}
     if no_diagonal:
-        sensPossible -= {"bg","bd","hd","hg"}
+        possibleDirections -= {"bg","bd","hd","hg"}
     if no_reverse:
-        sensPossible -= {"h","g","hd","bg"}
+        possibleDirections -= {"h","g","hd","bg"}
         
     grid = numpy.empty((height, width), dtype=str)
     answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
@@ -42,7 +42,7 @@ def generate(
             assert len(word) <= dim, f"Mot trop long: {word}"
             
             #choix de rangey, rangex, addy, addx
-            direction = random.choice(tuple(sensPossible))
+            direction = random.choice(tuple(possibleDirections))
             if "h" in direction:
 
                 rangey=range((height-len(word))+1)
