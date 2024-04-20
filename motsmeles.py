@@ -22,11 +22,21 @@ def generate(
     no_reverse=False,
     ):
 
-    possible_directions={"b","d","h","g","bg","bd","hd","hg"}
+    possible_directions={"d","r","u","l","dl","dr","ur","ul"}
+    """
+    d - down
+    r - right
+    u - up
+    l - left
+    dl - down-left
+    dr - down-right
+    ur - up-right
+    ul - up-left
+    """
     if no_diagonal:
-        possible_directions -= {"bg","bd","hd","hg"}
+        possible_directions -= {"dl","dr","ur","ul"}
     if no_reverse:
-        possible_directions -= {"h","g","hd","bg"}
+        possible_directions = {direction for direction in possible_directions if "l" not in direction and "u" not in direction}
         
     grid = numpy.empty((height, width), dtype=str)
     answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
@@ -43,20 +53,20 @@ def generate(
             
             #choix de rangey, rangex, addy, addx
             direction = random.choice(tuple(possible_directions))
-            if "h" in direction:
+            if "u" in direction:
 
                 rangey=range((height-len(word))+1)
                 addy=1
-            elif "b" in direction:
+            elif "d" in direction:
                 rangey=range(len(word)-1,height)
                 addy=-1
             else:
                 rangey=range(height)
                 addy=0
-            if "d" in direction:
+            if "r" in direction:
                 rangex=range((width-len(word))+1)
                 addx=1
-            elif "g" in direction:
+            elif "l" in direction:
                 rangex=range(len(word)-1,width)
                 addx=-1
             else:
