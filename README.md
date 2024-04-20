@@ -1,23 +1,17 @@
- C'est un générateur de mots mêlés. Pour l'installer, exécutez `pip install motsmeles`
+ This is a word crossing game generator `pip install motsmeles`
 
 # Usage
 
-Importez la librairie `motsmeles.`
+To use it, just import the library
 
 ```python
-
 import motsmeles
-```
 
-Ensuite pour générer un mots-mêlés, utilisez la fonction `motsmeles.generate()`
-
-```python
-jeu,answers=motsmeles.generate(
+grid,answers=motsmeles.generate(
     [
         "PYTHON",
         "JAVA",
         "CPP",
-        "JAVASCRIPT",
         "HTML",
         "CSS",
         "PHP",
@@ -26,24 +20,26 @@ jeu,answers=motsmeles.generate(
         "PERL",
         "RUST",
     ],
-    dimensionsx = 10, 
-    dimensionsy = 10)
+    width = 10, 
+    height = 10)
+
+
+
 ```
 
-La variable `jeu` contient le mots-mêlés, c'est un tableau Numpy, pour l'afficher utilisez `motsmeles.print()` et pour l'enregistrer dans un fichier `motsmeles.save()`
+The `grid` variable contain the grid of the game, it's a numpy array, display it using `motsmeles.print()` or save in a file with `motsmeles.save()`
 
 ```python
 
-motsmeles.print(jeu)
-motsmeles.save(jeu,file="motsmeles.txt")
+motsmeles.print(grid)
+motsmeles.save(grid,file="motsmeles.txt")
 ```
 
+# CLI Usage
 
-# Usage en CLI
-
-Vous pouvez aussi éxécuter directement dans le CLI
+You can also execute the cli version
 
 ```
 
-motsmeles PYTHON JAVA CPP JAVASCRIPT HTML CSS -x 10 -y 10
+motsmeles PYTHON JAVA CPP HTML CSS PHP RUBY SWIFT PERL RUST -W 10 -H 10
 ```
