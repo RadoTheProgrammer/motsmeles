@@ -6,12 +6,13 @@ import sys
 import builtins
 
 
-alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-# TODO remplacer sensPossible par allow_inverse, allow_diagonal
+ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+debug_mode = hasattr(sys, 'gettrace') and sys.gettrace()
+# 1TODO remplacer sensPossible par allow_inverse, allow_diagonal
 class GenerateError(Exception):
     pass
 def generate(
-    mots,
+    words,
     dimensionsx=10,
     dimensionsy=10,
     #sensPossible={"b","d","h","g","bg","bd","hd","hg"}
@@ -25,96 +26,96 @@ def generate(
     if no_reverse:
         sensPossible -= {"h","g","hd","bg"}
         
-    grille = numpy.empty((dimensionsy, dimensionsx), dtype=str)
+    grid = numpy.empty((dimensionsy, dimensionsx), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     
     def _generate():
         # 1. Placer les mots
-        for mot in mots:
+        for word in words:
             #Vérification du mot
-            mot = mot.upper()
-            for letter in mot:
-                assert letter in alphabet,f"Mot invalid: {mot}"
+            word = word.upper()
+            for letter in word:
+                assert letter in ALPHABET,f"Mot invalid: {word}"
             dim = min(dimensionsx, dimensionsy)
-            assert len(mot) <= dim, f"Mot trop long: {mot}"
+            assert len(word) <= dim, f"Mot trop long: {word}"
             
             #choix de rangey, rangex, addy, addx
-            sens = random.choice(tuple(sensPossible))
-            if "h" in sens:
+            direction = random.choice(tuple(sensPossible))
+            if "h" in direction:
 
-                rangey=range((dimensionsy-len(mot))+1)
+                rangey=range((dimensionsy-len(word))+1)
                 addy=1
-            elif "b" in sens:
-                rangey=range(len(mot)-1,dimensionsy)
+            elif "b" in direction:
+                rangey=range(len(word)-1,dimensionsy)
                 addy=-1
             else:
                 rangey=range(dimensionsy)
                 addy=0
-            if "d" in sens:
-                rangex=range((dimensionsx-len(mot))+1)
+            if "d" in direction:
+                rangex=range((dimensionsx-len(word))+1)
                 addx=1
-            elif "g" in sens:
-                rangex=range(len(mot)-1,dimensionsx)
+            elif "g" in direction:
+                rangex=range(len(word)-1,dimensionsx)
                 addx=-1
             else:
                 rangex=range(dimensionsx)
                 addx=0
 
             choixcoordonnees=[]
-            for y in rangey:
+            for y1 in rangey:
 
-                for x in rangex:
+                for x1 in rangex:
 
-                    xh,yh=x,y #create copy of x,y
+                    x2,y2=x1,y1 #create copy of x,y
                     Break=False
-                    for letter in mot:
+                    for letter in word:
 
                         #Verify if it's a good emplacement mean: verify if it's blank OR filled with the right letter
-                        if grille[yh,xh]!="":
-                            if grille[yh,xh]!=letter:
+                        if grid[y2,x2]!="":
+                            if grid[y2,x2]!=letter:
                                 break
-                        xh+=addx
-                        yh+=addy
+                        x2+=addx
+                        y2+=addy
                     else:               
-                        choixcoordonnees.append((y,x))
+                        choixcoordonnees.append((y1,x1))
             if not choixcoordonnees: 
                 
-                raise GenerateError(f"Impossible de placer le mot {mot}")
-            y,x=random.choice(choixcoordonnees)
+                raise GenerateError(f"Unable to place the word {word}")
+            y1,x1=random.choice(choixcoordonnees)
             #xh,yh=coordonnees(index)
-            xh,yh=x,y
-            for letter in mot:
-                grille[yh,xh]=letter # a big debug: replace with yh, xh
+            x2,y2=x1,y1
+            for letter in word:
+                grid[y2,x2]=letter # a big debug: replace with yh, xh
 
-                xh+=addx
-                yh+=addy
-            answers.loc[len(answers)] = {'mot': mot, 'sens': sens, 'x': x, 'y': y,'xh': xh, 'yh': yh}
+                x2+=addx
+                y2+=addy
+            answers.loc[len(answers)] = {'mot': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
 
         def verifsens(addx,addy):
 
-            grille[y,x]=letter 
+            grid[y1,x1]=letter 
             mot=letter
-            xh,yh=x,y
+            xh,yh=x1,y1
             while 0<=xh<dimensionsx and 0<=yh<dimensionsy:
-                if grille[yh,xh]=="":
+                if grid[yh,xh]=="":
                     return True
-                if mot in mots:
+                if mot in words:
                     return False
                 #lettrespossible.append(letter)
-                mot+=grille[yh,xh]
+                mot+=grid[yh,xh]
                 xh+=addx
                 yh+=addy 
             return True
 
-        for y in range(dimensionsy):
-            for x in range(dimensionsx):
+        for y1 in range(dimensionsy):
+            for x1 in range(dimensionsx):
                 for _ in range(1):
-                    xs,ys=x,y
+                    xs,ys=x1,y1
                     lettrespossible=[]
-                    if grille[y,x]:
+                    if grid[y1,x1]:
                         #print(repr(letters[y,x]))
                         break
-                    for letter in alphabet:
+                    for letter in ALPHABET:
                         for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
                             if not verifsens(addx,addy):
                                 lettrespossible.append(letter)
@@ -122,24 +123,25 @@ def generate(
                         else:
                             lettrespossible.append(letter)
                     if not lettrespossible:
-                        raise GenerateError(f"Impossible de placer une lettre à {x},{y}")
-                    grille[y,x]=random.choice(lettrespossible)
-                if grille[ys,xs] not in alphabet:
+                        raise GenerateError(f"Unable to place {x1},{y1}")
+                    grid[y1,x1]=random.choice(lettrespossible)
+                if grid[ys,xs] not in ALPHABET:
                     pass
             
-        return grille,answers
+        return grid,answers
     for _ in range(10):
         try:
             return _generate()
         except GenerateError:
             pass
-    
+    else:
+        raise GenerateError("Unable to generate a grid")
     # for y in range(dimensionsy):
     #     for x in range(dimensionsx):
     #         if letters[y,x]=="":
     #             pass
                 #letters[y,x]=random.choice(alphabet)
-    return grille,answers
+    return grid,answers
 
 def print(grille,file=sys.stdout):
     for y in range(len(grille)):
