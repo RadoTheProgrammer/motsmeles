@@ -13,8 +13,8 @@ class GenerateError(Exception):
     pass
 def generate(
     words,
-    dimensionsx=10,
-    dimensionsy=10,
+    width=10,
+    height=10,
     #sensPossible={"b","d","h","g","bg","bd","hd","hg"}
     no_diagonal=False,
     no_reverse=False,
@@ -26,7 +26,7 @@ def generate(
     if no_reverse:
         sensPossible -= {"h","g","hd","bg"}
         
-    grid = numpy.empty((dimensionsy, dimensionsx), dtype=str)
+    grid = numpy.empty((height, width), dtype=str)
     answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
     
     def _generate():
@@ -36,29 +36,29 @@ def generate(
             word = word.upper()
             for letter in word:
                 assert letter in ALPHABET,f"Mot invalid: {word}"
-            dim = min(dimensionsx, dimensionsy)
+            dim = min(width, height)
             assert len(word) <= dim, f"Mot trop long: {word}"
             
             #choix de rangey, rangex, addy, addx
             direction = random.choice(tuple(sensPossible))
             if "h" in direction:
 
-                rangey=range((dimensionsy-len(word))+1)
+                rangey=range((height-len(word))+1)
                 addy=1
             elif "b" in direction:
-                rangey=range(len(word)-1,dimensionsy)
+                rangey=range(len(word)-1,height)
                 addy=-1
             else:
-                rangey=range(dimensionsy)
+                rangey=range(height)
                 addy=0
             if "d" in direction:
-                rangex=range((dimensionsx-len(word))+1)
+                rangex=range((width-len(word))+1)
                 addx=1
             elif "g" in direction:
-                rangex=range(len(word)-1,dimensionsx)
+                rangex=range(len(word)-1,width)
                 addx=-1
             else:
-                rangex=range(dimensionsx)
+                rangex=range(width)
                 addx=0
 
             choixcoordonnees=[]
@@ -96,7 +96,7 @@ def generate(
             grid[y1,x1]=letter 
             mot=letter
             xh,yh=x1,y1
-            while 0<=xh<dimensionsx and 0<=yh<dimensionsy:
+            while 0<=xh<width and 0<=yh<height:
                 if grid[yh,xh]=="":
                     return True
                 if mot in words:
@@ -107,8 +107,8 @@ def generate(
                 yh+=addy 
             return True
 
-        for y1 in range(dimensionsy):
-            for x1 in range(dimensionsx):
+        for y1 in range(height):
+            for x1 in range(width):
                 for _ in range(1):
                     xs,ys=x1,y1
                     lettrespossible=[]
@@ -129,19 +129,15 @@ def generate(
                     pass
             
         return grid,answers
+    errs=[]
     for _ in range(10):
         try:
             return _generate()
-        except GenerateError:
-            pass
+        except GenerateError as err:
+            if debug_mode:
+                print(err)
     else:
         raise GenerateError("Unable to generate a grid")
-    # for y in range(dimensionsy):
-    #     for x in range(dimensionsx):
-    #         if letters[y,x]=="":
-    #             pass
-                #letters[y,x]=random.choice(alphabet)
-    return grid,answers
 
 def print(grille,file=sys.stdout):
     for y in range(len(grille)):
@@ -160,20 +156,20 @@ def main():
     
     parser = argparse.ArgumentParser(description="générateur de mots mêlés")
     parser.add_argument("mots", nargs="+", help="les mots à placer")
-    parser.add_argument("-x", "--dimensionsx", type=int, default=10, help="la largeur de la grille")
-    parser.add_argument("-y", "--dimensionsy", type=int, default=10, help="la hauteur de la grille")
+    parser.add_argument("-x", "--width", type=int, default=10, help="the width of the grid")
+    parser.add_argument("-y", "--height", type=int, default=10, help="the height of the grid")
     #parser.add_argument("-o", "--output-file", help="fichier de sortie")
-    parser.add_argument("-d","--no-diagonal", action="store_true", help="ne pas autoriser les mots en diagonale")
-    parser.add_argument("-r","--no-reverse", action="store_true", help="ne pas autoriser les mots en sens inverse")
+    parser.add_argument("-d","--no-diagonal", action="store_true", help="no diagonal words")
+    parser.add_argument("-r","--no-reverse", action="store_true", help="no reverse words")
     args=parser.parse_args()
-    grille,answers=generate(
+    grid,answers=generate(
         args.mots,
-        args.dimensionsx,
-        args.dimensionsy,
+        args.width,
+        args.height,
         no_diagonal=args.no_diagonal,
         no_reverse=args.no_reverse,
         )
-    print(grille)
+    print(grid)
     builtins.print(answers)
 if __name__=="__main__":
     main()
