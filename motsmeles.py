@@ -11,10 +11,12 @@ debug_mode = hasattr(sys, 'gettrace') and sys.gettrace()
 # 1TODO remplacer sensPossible par allow_inverse, allow_diagonal
 class GenerateError(Exception):
     pass
+DEFAULT_WIDTH=10
+DEFAULT_HEIGHT=10
 def generate(
     words,
-    width=10,
-    height=10,
+    width=DEFAULT_WIDTH,
+    height=DEFAULT_HEIGHT,
     #sensPossible={"b","d","h","g","bg","bd","hd","hg"}
     no_diagonal=False,
     no_reverse=False,
@@ -27,7 +29,7 @@ def generate(
         sensPossible -= {"h","g","hd","bg"}
         
     grid = numpy.empty((height, width), dtype=str)
-    answers = pd.DataFrame(columns=['mot', 'sens', 'x', 'y','xh', 'yh'])
+    answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
     
     def _generate():
         # 1. Placer les mots
@@ -89,20 +91,20 @@ def generate(
 
                 x2+=addx
                 y2+=addy
-            answers.loc[len(answers)] = {'mot': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+            answers.loc[len(answers)] = {'word': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
 
         def verifsens(addx,addy):
 
             grid[y1,x1]=letter 
-            mot=letter
+            word=letter
             xh,yh=x1,y1
             while 0<=xh<width and 0<=yh<height:
                 if grid[yh,xh]=="":
                     return True
-                if mot in words:
+                if word in words:
                     return False
                 #lettrespossible.append(letter)
-                mot+=grid[yh,xh]
+                word+=grid[yh,xh]
                 xh+=addx
                 yh+=addy 
             return True
@@ -155,15 +157,15 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="générateur de mots mêlés")
-    parser.add_argument("mots", nargs="+", help="les mots à placer")
-    parser.add_argument("-x", "--width", type=int, default=10, help="the width of the grid")
-    parser.add_argument("-y", "--height", type=int, default=10, help="the height of the grid")
+    parser.add_argument("words", nargs="+", help="les mots à placer")
+    parser.add_argument("-W", "--width", type=int, default=DEFAULT_WIDTH, help="the width of the grid")
+    parser.add_argument("-H", "--height", type=int, default=DEFAULT_HEIGHT, help="the height of the grid")
     #parser.add_argument("-o", "--output-file", help="fichier de sortie")
     parser.add_argument("-d","--no-diagonal", action="store_true", help="no diagonal words")
     parser.add_argument("-r","--no-reverse", action="store_true", help="no reverse words")
     args=parser.parse_args()
     grid,answers=generate(
-        args.mots,
+        args.words,
         args.width,
         args.height,
         no_diagonal=args.no_diagonal,
