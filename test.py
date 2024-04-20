@@ -1,13 +1,10 @@
-# %%
 import motsmeles
 
-# %%
 grid,answers=motsmeles.generate(
     [
         "PYTHON",
         "JAVA",
         "CPP",
-        "JAVASCRIPT",
         "HTML",
         "CSS",
         "PHP",
@@ -18,5 +15,6 @@ grid,answers=motsmeles.generate(
     ],
     width = 10, 
     height = 10)
+print(answers)
 
 
