@@ -15,6 +15,7 @@ grid,answers=motsmeles.generate(
     ],
     width = 10, 
     height = 10)
+motsmeles.print(grid)
 print(answers)
 
 
