@@ -53,11 +53,11 @@ def generate(
             
             #choix de rangey, rangex, addy, addx
             direction = random.choice(tuple(possible_directions))
-            if "u" in direction:
+            if "d" in direction:
 
                 rangey=range((height-len(word))+1)
                 addy=1
-            elif "d" in direction:
+            elif "u" in direction:
                 rangey=range(len(word)-1,height)
                 addy=-1
             else:
