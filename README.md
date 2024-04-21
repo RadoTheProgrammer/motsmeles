@@ -1,4 +1,4 @@
- This is a word crossing game generator `pip install motsmeles`
+ This is a word crossing game generator, install it with `pip3 install motsmeles`
 
 # Usage
 
