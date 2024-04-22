@@ -13,6 +13,7 @@ class GenerateError(Exception):
     pass
 DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
+DIRECTIONS=((0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))
 def generate(
     words,
     width=DEFAULT_WIDTH,
@@ -22,7 +23,7 @@ def generate(
     no_reverse=False,
     ):
 
-    possible_directions={"d","r","u","l","dl","dr","ur","ul"}
+
     """
     d - down
     r - right
@@ -33,10 +34,11 @@ def generate(
     ur - up-right
     ul - up-left
     """
+    possible_directions = DIRECTIONS
     if no_diagonal:
-        possible_directions -= {"dl","dr","ur","ul"}
+        possible_directions = [d for d in possible_directions if 0 in d]
     if no_reverse:
-        possible_directions = {direction for direction in possible_directions if "l" not in direction and "u" not in direction}
+        possible_directions = [d for d in possible_directions if -1 not in d]
         
     grid = numpy.empty((height, width), dtype=str)
     answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
@@ -52,23 +54,22 @@ def generate(
             assert len(word) <= dim, f"Mot trop long: {word}"
             
             #choix de rangey, rangex, addy, addx
-            direction = random.choice(tuple(possible_directions))
-            if "d" in direction:
-
+            addx,addy = random.choice(tuple(possible_directions))
+            if addy==1:
                 rangey=range((height-len(word))+1)
-                addy=1
-            elif "u" in direction:
+                
+            elif addy==-1:
                 rangey=range(len(word)-1,height)
-                addy=-1
+
             else:
                 rangey=range(height)
-                addy=0
-            if "r" in direction:
+
+            if addx==1:
                 rangex=range((width-len(word))+1)
-                addx=1
-            elif "l" in direction:
+
+            elif addx==-1:
                 rangex=range(len(word)-1,width)
-                addx=-1
+
             else:
                 rangex=range(width)
                 addx=0
@@ -101,7 +102,7 @@ def generate(
 
                 x2+=addx
                 y2+=addy
-            answers.loc[len(answers)] = {'word': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+            answers.loc[len(answers)] = {'word': word, 'direction': (addx,addy), 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
 
         def verifsens(addx,addy):
             """Verify if the letter can be placed without placing a word in the same direction"""
