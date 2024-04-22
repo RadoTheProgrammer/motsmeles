@@ -104,7 +104,7 @@ def generate(
             answers.loc[len(answers)] = {'word': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
 
         def verifsens(addx,addy):
-
+            """Verify if the letter can be placed without placing a word in the same direction"""
             grid[y1,x1]=letter 
             word=letter
             xh,yh=x1,y1
@@ -130,7 +130,7 @@ def generate(
                     for letter in ALPHABET:
                         for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
                             if not verifsens(addx,addy):
-                                lettrespossible.append(letter)
+                                #lettrespossible.append(letter)
                                 break
                         else:
                             lettrespossible.append(letter)
@@ -152,17 +152,18 @@ def generate(
         raise GenerateError("Unable to generate a grid")
     
 def solve(grid,words):
+    answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
     for y1 in range(grid.shape[0]):
         for x1 in range(grid.shape[1]):
             for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
                 x2,y2=x1,y1
-                word=grid[y1,x1]
+                word=""
                 while 0<=x2<grid.shape[1] and 0<=y2<grid.shape[0]:
+                    word+=grid[y2,x2]
                     if word in words:
-                        yield word,x1,y1,x2,y2
+                        answers.loc[len(answers)] = {'word': word, 'direction': "TODO", 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
                     x2+=addx
                     y2+=addy
-                    word+=grid[y2,x2]
 
 def print(grille,file=sys.stdout):
     for y in range(len(grille)):
