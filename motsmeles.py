@@ -150,6 +150,19 @@ def generate(
                 print(err)
     else:
         raise GenerateError("Unable to generate a grid")
+    
+def solve(grid,words):
+    for y1 in range(grid.shape[0]):
+        for x1 in range(grid.shape[1]):
+            for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
+                x2,y2=x1,y1
+                word=grid[y1,x1]
+                while 0<=x2<grid.shape[1] and 0<=y2<grid.shape[0]:
+                    if word in words:
+                        yield word,x1,y1,x2,y2
+                    x2+=addx
+                    y2+=addy
+                    word+=grid[y2,x2]
 
 def print(grille,file=sys.stdout):
     for y in range(len(grille)):
