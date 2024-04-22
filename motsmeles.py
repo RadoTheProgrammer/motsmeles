@@ -1,5 +1,5 @@
 
-import numpy
+import numpy as np
 import pandas as pd
 import random
 import sys
@@ -15,7 +15,13 @@ DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
 DIRECTIONS=((0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))
 class Grid:
+    def __init__(self,grid:np.array,words:iter):
+        self.grid=grid
+        self.words=words
+        
+    @classmethod
     def generate(
+        cls,
         words,
         width=DEFAULT_WIDTH,
         height=DEFAULT_HEIGHT,
@@ -41,7 +47,7 @@ class Grid:
         if no_reverse:
             possible_directions = [d for d in possible_directions if -1 not in d]
             
-        grid = numpy.empty((height, width), dtype=str)
+        grid = np.empty((height, width), dtype=str)
         answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
         
         def _generate():
@@ -142,7 +148,7 @@ class Grid:
                     if grid[ys,xs] not in ALPHABET:
                         pass
                 
-            return grid,answers
+            return cls(grid,words),answers
         errs=[]
         for _ in range(10):
             try:
@@ -167,15 +173,18 @@ class Grid:
                         x2+=addx
                         y2+=addy
 
-def print(grille,file=sys.stdout):
-    for y in range(len(grille)):
-        for x in range(len(grille[0])):
-            builtins.print(grille[y,x],end="",file=file)
-        builtins.print(file=file)
+    def __repr__(self):
+        s=""
+        for y in range(len(self.grid)):
+            for x in range(len(self.grid[0])):
+                s+=self.grid[y,x]
+            s+="\n"
+        s+=" ".join(self.words)
+        return s
 
-def save(grille,file="motsmeles.txt"):
-    with open(file,"w") as f:
-        print(grille,file=f)
+    def save(self,file="motsmeles.txt"):
+        with open(file,"w") as f:
+            f.write(repr(self))
 def save_answers(answers,file="motsmeles-answers.csv"):
     answers.to_csv(file,index=False)
         
