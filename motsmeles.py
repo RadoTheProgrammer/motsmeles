@@ -1,4 +1,5 @@
 
+from mini_lambda import d
 import numpy as np
 import pandas as pd
 import random
@@ -47,10 +48,11 @@ class Grid:
         if no_reverse:
             possible_directions = [d for d in possible_directions if -1 not in d]
             
-        grid = np.empty((height, width), dtype=str)
-        answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
+
         
         def _generate():
+            grid = np.empty((height, width), dtype=str)
+            answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
             # 1. Placer les mots
             for word in words:
                 #Vérification du mot
@@ -149,6 +151,7 @@ class Grid:
                         pass
                 
             return cls(grid,words),answers
+        
         errs=[]
         for _ in range(10):
             try:
@@ -159,19 +162,20 @@ class Grid:
         else:
             raise GenerateError("Unable to generate a grid")
         
-    def solve(grid,words):
+    def solve(self):
         answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
-        for y1 in range(grid.shape[0]):
-            for x1 in range(grid.shape[1]):
-                for addx,addy in [(0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1)]:
+        for y1 in range(self.grid.shape[0]):
+            for x1 in range(self.grid.shape[1]):
+                for direction in DIRECTIONS:
                     x2,y2=x1,y1
                     word=""
-                    while 0<=x2<grid.shape[1] and 0<=y2<grid.shape[0]:
-                        word+=grid[y2,x2]
-                        if word in words:
-                            answers.loc[len(answers)] = {'word': word, 'direction': "TODO", 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
-                        x2+=addx
-                        y2+=addy
+                    while 0<=x2<self.grid.shape[1] and 0<=y2<self.grid.shape[0]:
+                        word+=self.grid[y2,x2]
+                        if word in self.words:
+                            answers.loc[len(answers)] = {'word': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+                        x2+=direction[0]
+                        y2+=direction[1]
+        return answers
 
     def __repr__(self):
         s=""
