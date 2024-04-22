@@ -52,7 +52,7 @@ class Grid:
         
         def _generate():
             grid = np.empty((height, width), dtype=str)
-            answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
+            answers = pd.DataFrame(index=words, columns=['direction', 'x1', 'y1','x2', 'y2'])
             # 1. Placer les mots
             for word in words:
                 #Vérification du mot
@@ -111,7 +111,7 @@ class Grid:
 
                     x2+=addx
                     y2+=addy
-                answers.loc[len(answers)] = {'word': word, 'direction': (addx,addy), 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+                answers.loc[word] = {'direction': (addx,addy), 'x1': x1, 'y1': y1,'x2': x2-addx, 'y2': y2-addy}
 
             def verifsens(addx,addy):
                 """Verify if the letter can be placed without placing a word in the same direction"""
@@ -163,7 +163,7 @@ class Grid:
             raise GenerateError("Unable to generate a grid")
         
     def solve(self):
-        answers = pd.DataFrame(columns=['word', 'direction', 'x1', 'y1','x2', 'y2'])
+        answers = pd.DataFrame(index=self.words, columns=['direction', 'x1', 'y1', 'x2', 'y2']).reindex(self.words)
         for y1 in range(self.grid.shape[0]):
             for x1 in range(self.grid.shape[1]):
                 for direction in DIRECTIONS:
@@ -172,7 +172,8 @@ class Grid:
                     while 0<=x2<self.grid.shape[1] and 0<=y2<self.grid.shape[0]:
                         word+=self.grid[y2,x2]
                         if word in self.words:
-                            answers.loc[len(answers)] = {'word': word, 'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+                            answers.loc[word] = {'direction': direction, 'x1': x1, 'y1': y1,'x2': x2, 'y2': y2}
+                            break
                         x2+=direction[0]
                         y2+=direction[1]
         return answers
@@ -189,6 +190,7 @@ class Grid:
     def save(self,file="motsmeles.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
+generate=Grid.generate
 def save_answers(answers,file="motsmeles-answers.csv"):
     answers.to_csv(file,index=False)
         
