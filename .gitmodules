@@ -1,0 +1,3 @@
+[submodule "rrprettier"]
+	path = rrprettier
+	url = https://github.com/RadoTheProgrammer/rrprettier
