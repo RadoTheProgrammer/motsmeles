@@ -16,6 +16,6 @@ grid,answers=motsmeles.Grid.generate(
     width = 10, 
     height = 10)
 print(answers)
-print(grid.solve())
+print(grid.solve())#
 
 
