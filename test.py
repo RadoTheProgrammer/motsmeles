@@ -1,6 +1,6 @@
 import motsmeles
 
-game,answers=motsmeles.Grid.generate(
+game,answers=motsmeles.Game.generate(
     [
         "PYTHON",
         "JAVA",
@@ -15,7 +15,8 @@ game,answers=motsmeles.Grid.generate(
     ],
     width = 10, 
     height = 10)
-print(answers)
-print(game.solve())#
+#print(answers)
+print(game)#
+game.save(file="motsmeles.txt")
 
 
