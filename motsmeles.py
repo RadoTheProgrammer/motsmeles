@@ -16,17 +16,17 @@ DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
 DIRECTIONS=((0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))
 class Game:
-    def __init__(self,grid,words):
+    def __init__(self,grid,words=None):
         if isinstance(grid,str):
             grid=grid.strip().split("\n")
             if not words:
                 grid,words=grid[:-1],grid[-1]
-            grid=np.array(grid,dtype="<U1")
-        assert isinstance(grid,np.array)
+            grid=np.array([list(line) for line in grid],dtype="<U1")
+        assert isinstance(grid,np.ndarray)
         self.grid=grid
         
         if isinstance(words,str):
-            words=words.split("\n")
+            words=words.split(" ")
         words=[word.upper() for word in words]
         self.words=words
         
@@ -198,11 +198,16 @@ class Game:
         s+=" ".join(self.words)
         return s
 
+    @classmethod
+    def load(cls,file="motsmeles.txt"):
+        with open(file) as f:
+            return cls(f.read())
     def save(self,file="motsmeles.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
         
 generate=Game.generate
+load=Game.load
         
 def main():
     import argparse
