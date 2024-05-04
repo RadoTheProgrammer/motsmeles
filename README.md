@@ -27,12 +27,12 @@ game,answers=motsmeles.generate(
 
 ```
 
-The `game` variable contain the grid and the words of the game, it's a numpy array, display it using `motsmeles.print()` or save in a file with `motsmeles.save()`
+The `game` variable contain the grid and the words of the game, you can display it or save it in a file
 
 ```python
 
-motsmeles.print(game)
-motsmeles.save(game,file="motsmeles.txt")
+print(game)
+game.save("motsmeles.txt")
 ```
 
 # CLI Usage
