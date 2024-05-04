@@ -1,6 +1,6 @@
 import motsmeles
 
-grid,answers=motsmeles.Grid.generate(
+game,answers=motsmeles.Grid.generate(
     [
         "PYTHON",
         "JAVA",
@@ -16,6 +16,6 @@ grid,answers=motsmeles.Grid.generate(
     width = 10, 
     height = 10)
 print(answers)
-print(grid.solve())#
+print(game.solve())#
 
 

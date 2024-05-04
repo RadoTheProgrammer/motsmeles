@@ -7,7 +7,7 @@ To use it, just import the library
 ```python
 import motsmeles
 
-grid,answers=motsmeles.generate(
+game,answers=motsmeles.generate(
     [
         "PYTHON",
         "JAVA",
@@ -27,12 +27,12 @@ grid,answers=motsmeles.generate(
 
 ```
 
-The `grid` variable contain the grid of the game, it's a numpy array, display it using `motsmeles.print()` or save in a file with `motsmeles.save()`
+The `game` variable contain the grid and the words of the game, it's a numpy array, display it using `motsmeles.print()` or save in a file with `motsmeles.save()`
 
 ```python
 
-motsmeles.print(grid)
-motsmeles.save(grid,file="motsmeles.txt")
+motsmeles.print(game)
+motsmeles.save(game,file="motsmeles.txt")
 ```
 
 # CLI Usage
