@@ -15,9 +15,19 @@ class GenerateError(Exception):
 DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
 DIRECTIONS=((0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))
-class Grid:
-    def __init__(self,grid:np.array,words:iter):
+class Game:
+    def __init__(self,grid,words):
+        if isinstance(grid,str):
+            grid=grid.strip().split("\n")
+            if not words:
+                grid,words=grid[:-1],grid[-1]
+            grid=np.array(grid,dtype="<U1")
+        assert isinstance(grid,np.array)
         self.grid=grid
+        
+        if isinstance(words,str):
+            words=words.split("\n")
+        words=[word.upper() for word in words]
         self.words=words
         
     @classmethod
@@ -161,6 +171,7 @@ class Grid:
                     print(err)
         else:
             raise GenerateError("Unable to generate a grid")
+
         
     def solve(self):
         answers = pd.DataFrame(index=self.words, columns=['direction', 'x1', 'y1', 'x2', 'y2']).reindex(self.words)
@@ -190,9 +201,8 @@ class Grid:
     def save(self,file="motsmeles.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
-generate=Grid.generate
-def save_answers(answers,file="motsmeles-answers.csv"):
-    answers.to_csv(file,index=False)
+        
+generate=Game.generate
         
 def main():
     import argparse
