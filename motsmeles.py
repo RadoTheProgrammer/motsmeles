@@ -1,5 +1,5 @@
 
-from mini_lambda import d
+
 import numpy as np
 import pandas as pd
 import random
