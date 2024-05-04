@@ -34,7 +34,17 @@ The `game` variable contain the grid and the words of the game, you can display 
 print(game)
 game.save("motsmeles.txt")
 ```
+# Solver
+You can also load a game from a file
+```python
+game = motsmeles.load("motsmeles.txt")
+```
 
+And then solve it
+```python
+answers=game.solve()
+print(answers)
+```
 # CLI Usage
 
 You can also execute the cli version
