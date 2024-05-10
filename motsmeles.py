@@ -15,7 +15,7 @@ class GenerateError(Exception):
 DEFAULT_WIDTH=10
 DEFAULT_HEIGHT=10
 DIRECTIONS=((0,1),(1,1),(1,0),(1,-1),(0,-1),(-1,-1),(-1,0),(-1,1))
-class Grid:
+class Game:
     def __init__(self,grid:np.array,words:iter):
         self.grid=grid
         self.words=words
@@ -190,7 +190,7 @@ class Grid:
     def save(self,file="motsmeles.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
-generate=Grid.generate
+generate=Game.generate
 def save_answers(answers,file="motsmeles-answers.csv"):
     answers.to_csv(file,index=False)
         
