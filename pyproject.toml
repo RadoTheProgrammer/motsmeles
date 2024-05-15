@@ -12,7 +12,7 @@ numpy = "^1.26.4"
 pandas = "^2.2.1"
 
 [tool.poetry.scripts]
-motsmeles = "motsmeles:main"
+motsmeles = "motsmeles.__main__:main"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
