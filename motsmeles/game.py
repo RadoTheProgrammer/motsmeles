@@ -205,7 +205,9 @@ class Game:
     def save(self,file="motsmeles.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
-
+    def start_gui(self):
+        from .gui import GUI
+        GUI(self).start()
         
 generate=Game.generate
 load=Game.load
