@@ -34,22 +34,34 @@ The `game` variable contain the grid and the words of the game, you can display 
 print(game)
 game.save("motsmeles.txt")
 ```
+
 # Solver
+
 You can also load a game from a file
+
 ```python
 game = motsmeles.load("motsmeles.txt")
 ```
 
 And then solve it
+
 ```python
 answers=game.solve()
 print(answers)
 ```
+
 # CLI Usage
 
-You can also execute the cli version
+You can generate a game using the command gen:
 
 ```
 
-motsmeles PYTHON JAVA CPP HTML CSS PHP RUBY SWIFT PERL RUST -W 10 -H 10
+motsmeles gen PYTHON JAVA CPP HTML CSS PHP RUBY SWIFT PERL RUST -W 10 -H 10
+```
+
+Or solve a game using the command `solve`, where you need to insert the file arg where the game is
+
+```
+
+motsmeles solve motsmeles.txt
 ```
