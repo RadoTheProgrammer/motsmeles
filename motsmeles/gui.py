@@ -13,10 +13,10 @@ class GUI:
     def __init__(self,game):
         self.game=game
         
-        self.get_letter_size()
+        #self.get_letter_size()
     def get_case_size(self):
-        self.grid_width,self.grid_height = (self.screen_size[0]*self.grid_proportion,self.screen_size[1])
-        self.case_size = min((self.grid_width/self.game.grid.shape[1],self.game.grid_height/self.game.grid.shape[0]))
+        self.grid_pwidth,self.grid_pheight = (self.screen_size[0]*self.grid_proportion,self.screen_size[1])
+        self.case_size = min((self.grid_pwidth/self.game.grid.shape[1],self.grid_pheight/self.game.grid.shape[0]))
         #print(pygame.font.get_fonts())
         #widths,heights=[],[]
         # for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
@@ -28,9 +28,22 @@ class GUI:
         # self.l_size)etter_size=(max(widths),max(heights))
         # print(self.letter
         return
+    
+    def get_font(self):
+        font_size = 1
+        while True:
+            font=pygame.font.Font(size=font_size)
+            text=font.render("A",True,self.letter_color)
+            if max(text.get_size())>self.case_size:
+                return
+            font_size+=1
+            self.font=font
     def start(self):
+        self.get_case_size()
+        self.get_font()
         self.screen = pygame.display.set_mode(self.screen_size)
-        self.screen.fill("blue")
+        self.screen.fill(self.screen_color)
+        self.grid_lheight,self.grid_lwidth = self.game.grid.shape
         clock = pygame.time.Clock()
         running = True
 
@@ -48,14 +61,21 @@ class GUI:
             self.screen.fill(self.screen_color)
             
 
-            text = self.font.render("Hello pygame", True, self.letter_color)
-            text_rect = text.get_rect(center=(self.screen_size[0] // 2, self.screen_size[1] // 2))
+            #text = self.font.render("Hello pygame", True, self.letter_color)
+            #text_rect = text.get_rect(center=(self.screen_size[0] // 2, self.screen_size[1] // 2))
             
             # Blit the text onto the screen
-            self.screen.blit(text, text_rect)
+            #self.screen.blit(text, text_rect)
             #grid_height,grid_width = self.game.grid.shape
-            #for ygrid in range(grid_height):
-            #    for xgrid in range(grid_width):
+            y=self.case_size//2
+            for row in self.game.grid:
+                x=self.case_size//2
+                for letter in row:
+                    letter_surface = self.font.render(letter,True,self.letter_color)                    
+                    letter_rect = letter_surface.get_rect(center=(x,y))
+                    self.screen.blit(letter_surface,letter_rect)
+                    x+=self.case_size
+                y+=self.case_size
                     
 
             # RENDER YOUR GAME HERE
