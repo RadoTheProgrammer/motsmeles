@@ -199,10 +199,10 @@ class Game:
         return s
 
     @classmethod
-    def load(cls,file="motsmeles.txt"):
+    def load(cls,file="game1.txt"):
         with open(file) as f:
             return cls(f.read())
-    def save(self,file="motsmeles.txt"):
+    def save(self,file="mygame.txt"):
         with open(file,"w") as f:
             f.write(repr(self))
     def start_gui(self):

@@ -17,6 +17,6 @@ game,answers=motsmeles.Game.generate(
     height = 10)
 #print(answers)
 print(game)#
-game.save(file="motsmeles.txt")
-
+#game.save(file="mygame.txt")
+game.save(file="game1.txt")
 

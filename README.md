@@ -32,7 +32,7 @@ The `game` variable contain the grid and the words of the game, you can display 
 ```python
 
 print(game)
-game.save("motsmeles.txt")
+game.save("mygame.txt")
 ```
 
 # Solver
@@ -40,7 +40,7 @@ game.save("motsmeles.txt")
 You can also load a game from a file
 
 ```python
-game = motsmeles.load("motsmeles.txt")
+game = motsmeles.load("game1.txt")
 ```
 
 And then solve it
@@ -63,5 +63,5 @@ Or solve a game using the command `solve`, where you need to insert the file arg
 
 ```
 
-motsmeles solve motsmeles.txt
+motsmeles solve game1.txt
 ```
