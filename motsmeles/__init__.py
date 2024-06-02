@@ -1,1 +1,1 @@
-from .game import Game,load,generate
+from .game import Game,load,generate   # noqa: F401
